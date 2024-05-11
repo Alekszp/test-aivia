@@ -7,7 +7,15 @@
     <div class="bg-grey mt-5">
       <table v-if="showTable">
         <tr v-for="(n, i) in y" :key="i">
-          <td v-for="(s, k) in x" :key="k" width="36px" height="36" class="bg-white"></td>
+          <td
+            v-for="(s, k) in x"
+            :key="k"
+            class="cell"
+            width="36px"
+            height="36"
+            :ref="`${n}-${s}`"
+            @mouseenter="hover(`${n}-${s}`)"
+          ></td>
         </tr>
       </table>
     </div>
@@ -35,6 +43,14 @@ export default {
       } else {
         return
       }
+    },
+    hover(item) {
+      const cell = this.$refs[item][0].style.background
+      if (cell === 'blue') {
+        this.$refs[item][0].style.background = 'white'
+      } else {
+        this.$refs[item][0].style.background = 'blue'
+      }
     }
   }
 }
@@ -43,5 +59,9 @@ export default {
 <style scoped>
 .game {
   width: 100%;
+}
+
+.game td {
+  background: white;
 }
 </style>
