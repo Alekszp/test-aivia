@@ -8,19 +8,21 @@
               type="email"
               v-model="state.email"
               label="email"
+              class="mb-3"
+              :error="v$.email.$error"
+              :error-messages="v$.email.$errors[0]?.$message"
               @blur="v$.email.$touch"
             />
+            <v-spacer></v-spacer>
             <v-text-field
               type="password"
               v-model="state.password"
               label="password"
+              :error="v$.password.$error"
+              :error-messages="v$.password.$errors[0]?.$message"
               @blur="v$.password.$touch"
             />
-            <v-spacer></v-spacer>
-            <p v-if="v$.email.$error" class="text-red">Email required and must be valid</p>
-            <p v-if="v$.password.$error" class="text-red">
-              Password required and must be at least 6 characters
-            </p>
+
             <v-card-actions>
               <v-btn type="submit">Login</v-btn>
             </v-card-actions>
@@ -34,18 +36,24 @@
 <script>
 import { reactive } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
-import { required, email, minLength } from '@vuelidate/validators'
+import { required, email, minLength, helpers } from '@vuelidate/validators'
+import { REQUIRED_FIELD, INVALID_EMAIL, INVALID_PASSWORD } from '../helpers/validationMessages'
+
 export default {
   setup() {
     const state = reactive({
       email: '',
       password: ''
     })
+
     const rules = {
-      email: { required, email },
+      email: {
+        required: helpers.withMessage(REQUIRED_FIELD, required),
+        email: helpers.withMessage(INVALID_EMAIL, email)
+      },
       password: {
-        required,
-        minLength: minLength(6)
+        required: helpers.withMessage(REQUIRED_FIELD, required),
+        minLength: helpers.withMessage(INVALID_PASSWORD, minLength(6))
       }
     }
 
